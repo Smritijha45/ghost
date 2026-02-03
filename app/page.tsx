@@ -1,12 +1,17 @@
-import Image from "next/image";
+import Navbar from "@/app/components/navbar/Navbar";
+import HeroSection from "@/app/components/hero/HeroSection";
+import WhyItWorks from "@/app/components/why-it-works/WhyItWorks";
+import HowItWorks from "@/app/components/how-it-works/HowItWorks";
+import Footer from "@/app/components/footer/Footer";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black-50 font-sans dark:bg-black">
-      
-      <div className="text-center">
-        <h1>Hi, welcoome to ghost recruiter!</h1>
-    </div>
-    </div>
+    <>
+      <Navbar />
+      <HeroSection />
+      <WhyItWorks />
+      <HowItWorks />
+      <Footer />
+    </>
   );
 }
