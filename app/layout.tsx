@@ -1,6 +1,4 @@
-// app/layout.tsx
 import "./globals.css";
-import Navbar from "@/app/components/navbar/Navbar";
 
 export const metadata = {
   title: "Ghost Recruiter",
@@ -15,12 +13,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-white text-black">
-        <Navbar />
-
-        {/* Padding-top to offset fixed navbar */}
-        <main className="pt-10">
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );
