@@ -2,7 +2,7 @@ import { StepCard } from "./StepCard";
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-24 px-6">
+    <section id="how-it-works" className="py-24 px-6 bg-white">
       <h2 className="text-3xl font-semibold text-center text-black">
         How it works
       </h2>
