@@ -18,7 +18,7 @@ export default function RootLayout({
         <Navbar />
 
         {/* Padding-top to offset fixed navbar */}
-        <main className="pt-20">
+        <main className="pt-10">
           {children}
         </main>
       </body>

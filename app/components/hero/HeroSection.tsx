@@ -1,11 +1,11 @@
 export default function HeroSection() {
   return (
-    <section className="min-h-screen flex flex-col justify-center items-center text-center bg-white px-6">
-      <span className="mb-4 text-sm bg-gray-100 px-4 py-1 rounded-full">
+    <section className="min-h-screen pt-24 flex flex-col justify-center items-center text-center bg-white px-6 py-12">
+      <span className="mb-6 text-sm bg-gray-300 border-gray-800 px-4 py-2 rounded-full text-gray-800">
         🟢 v1.0 Now Live
       </span>
 
-      <h1 className="text-4xl md:text-5xl font-bold text-black max-w-3xl">
+      <h1 className="text-2xl md:text-5xl font-bold text-black max-w-3xl">
         Get Rejected by AI Before Recruiters Do.
       </h1>
 
@@ -20,9 +20,10 @@ export default function HeroSection() {
       >
         Analyze My Resume →
       </a>
+      
 
       {/* ATS Preview Card */}
-      <div className="mt-20 w-full max-w-5xl bg-white rounded-xl shadow-md flex overflow-hidden text-left">
+      <div className="mt-20 w-full max-w-4xl h-[500px] bg-white rounded-xl shadow-md flex overflow-hidden text-left">
         {/* Left Sidebar */}
         <div className="w-1/4 bg-gray-50 p-6 hidden md:block">
           <div className="space-y-4">
