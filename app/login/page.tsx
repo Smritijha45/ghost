@@ -61,7 +61,7 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="mt-6 text-center text-sm text-gray-400">
           No account?{" "}
-          <a href="#" className="text-red-500 hover:text-red-400">
+          <a href="/signup" className="text-red-500 hover:text-red-400">
             Get rejected first
           </a>
         </div>
