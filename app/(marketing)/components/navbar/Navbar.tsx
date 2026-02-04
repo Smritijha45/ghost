@@ -6,7 +6,7 @@ export default function Navbar() {
     <nav className="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-xl border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 py-5 grid grid-cols-3 items-center">
 
-        {/* Logo */}
+     
         <div className="justify-self-start">
           <Link
             href="/"
@@ -16,7 +16,6 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Nav Links */}
         <div className="justify-self-center flex items-center gap-10 text-sm text-gray-400">
           <a
             href="#why-it-works"
@@ -38,7 +37,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* CTA */}
+     
         <div className="justify-self-end">
           <Link
             href="/dashboard"
