@@ -1,6 +1,7 @@
-const pdfParse = require("pdf-parse");
+// lib/pdf.ts
 
 export async function extractTextFromPDF(buffer: Buffer) {
-  const data = await pdfParse(buffer);
+  const pdf = require("pdf-parse");
+  const data = await pdf(buffer);
   return data.text;
 }

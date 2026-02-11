@@ -34,7 +34,7 @@ export default function ResumePage() {
 
     sessionStorage.setItem(
       "resumeAnalysis",
-      JSON.stringify(data.analysis)
+      JSON.stringify(data)
     );
 
     setLoading(false);

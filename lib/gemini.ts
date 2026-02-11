@@ -1,46 +1,16 @@
-export async function analyzeResumeWithGemini(
-  resumeText: string,
-  companyType: string
-) {
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: `
-You are a brutally honest tech recruiter.
+// lib/gemini.ts
 
-Analyze this resume for a ${companyType} company.
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-Return:
-1. Major problems
-2. Missing sections
-3. Bad wording
-4. Recruiter red flags
-5. Actionable improvements
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-Resume:
-${resumeText}
-                `,
-              },
-            ],
-          },
-        ],
-      }),
-    }
-  );
+export async function callGemini(prompt: string) {
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.5-flash",
+  });
 
-  const data = await response.json();
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
 
-  return (
-    data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-    "No feedback generated."
-  );
+  return response.text();
 }

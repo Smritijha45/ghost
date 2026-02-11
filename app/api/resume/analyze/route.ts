@@ -1,8 +1,9 @@
+export const runtime = "nodejs";
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 import { extractTextFromPDF } from "@/lib/pdf";
-import { analyzeResumeWithGemini } from "@/lib/gemini";
+import { callGemini } from "@/lib/gemini";
+
+
 
 export async function POST(req: Request) {
   try {
@@ -17,26 +18,34 @@ export async function POST(req: Request) {
       );
     }
 
-    // Save resume locally
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadDir = path.join(process.cwd(), "uploads");
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-
-    const filePath = path.join(uploadDir, file.name);
-    fs.writeFileSync(filePath, buffer);
-
-    // Extract text from PDF
     const resumeText = await extractTextFromPDF(buffer);
 
-    // Analyze with Gemini
-    const analysis = await analyzeResumeWithGemini(
-      resumeText,
-      companyType
-    );
+    const prompt = `
+You are a brutally honest recruiter reviewing a resume for a ${companyType} company.
 
-    return NextResponse.json({ analysis });
+Roast this resume in a sarcastic but helpful way.
+
+Return response in this format:
+
+1. ATS Score (out of 100)
+2. Strengths
+3. Weaknesses
+4. Brutal Roast Paragraph
+
+Resume:
+${resumeText}
+`;
+
+    const analysis = await callGemini(prompt);
+
+    return NextResponse.json({
+      analysis,
+      resumeText,
+      companyType,
+    });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
