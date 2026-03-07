@@ -68,7 +68,7 @@ export default function Navbar() {
       {/* Sidebar */}
       <div
         className={`fixed top-0 right-0 h-full w-64 
-        bg-black border-l border-white/10 
+        bg-zinc-950/95 backdrop-blur-xl border-l border-white/10 
         shadow-2xl shadow-black/80
         transform transition-transform duration-300
         ${open ? "translate-x-0" : "translate-x-full"} md:hidden`}
