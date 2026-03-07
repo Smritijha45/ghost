@@ -42,8 +42,11 @@ export default function ResumePage() {
   };
 
   return (
-    <div className="text-white">
-      <h2 className="text-2xl font-semibold">Resume Analysis</h2>
+    <div className="text-white max-w-2xl w-full">
+
+      <h2 className="text-2xl font-semibold">
+        Resume Analysis
+      </h2>
 
       <input
         ref={fileInputRef}
@@ -53,22 +56,33 @@ export default function ResumePage() {
         onChange={handleUpload}
       />
 
-      <button
-        onClick={() => fileInputRef.current?.click()}
-        className="mt-4 px-4 py-2 bg-white/10 rounded"
-      >
-        Upload Resume
-      </button>
+      {/* Upload + Select */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-4">
 
-      <select
-        value={companyType}
-        onChange={(e) => setCompanyType(e.target.value)}
-        className="ml-4 bg-black border px-2 py-1"
-      >
-        <option>Startup</option>
-        <option>Mid-size</option>
-        <option>Enterprise</option>
-      </select>
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="px-4 py-2 bg-white/10 rounded"
+        >
+          Upload Resume
+        </button>
+
+        <select
+          value={companyType}
+          onChange={(e) => setCompanyType(e.target.value)}
+          className="bg-black border px-2 py-2 rounded"
+        >
+          <option>Startup</option>
+          <option>Mid-size</option>
+          <option>Enterprise</option>
+        </select>
+
+      </div>
+
+      {file && (
+        <p className="text-sm text-gray-400 mt-2">
+          Uploaded: {file.name}
+        </p>
+      )}
 
       <button
         onClick={analyzeResume}
@@ -77,7 +91,11 @@ export default function ResumePage() {
         Analyze Resume
       </button>
 
-      {loading && <p className="mt-4">Recruiter reviewing resume...</p>}
+      {loading && (
+        <p className="mt-4 text-gray-400">
+          Recruiter reviewing resume...
+        </p>
+      )}
     </div>
   );
 }
