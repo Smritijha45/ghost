@@ -1,0 +1,11 @@
+app/api/resume/analyze/route.ts(2,8): error TS1192: Module '"C:/Users/SmritiJha/Desktop/ghost recruiter/ghost/node_modules/pdf-parse/dist/pdf-parse/esm/index"' has no default export.
+app/api/resume/analyze/route.ts(3,20): error TS2307: Cannot find module '@/lib/prisma' or its corresponding type declarations.
+app/api/resume/fix/route.ts(2,10): error TS2305: Module '"@/lib/gemini"' has no exported member 'callGemini'.
+app/api/resume/history/route.ts(1,20): error TS2307: Cannot find module '@/lib/prisma' or its corresponding type declarations.
+app/login/page.tsx(8,19): error TS2339: Property 'setActive' does not exist on type 'SignInSignalValue'.
+app/login/page.tsx(8,30): error TS2339: Property 'isLoaded' does not exist on type 'SignInSignalValue'.
+app/login/page.tsx(24,33): error TS2339: Property 'attemptFirstFactor' does not exist on type 'SignInFutureResource'.
+app/signup/page.tsx(9,18): error TS2339: Property 'isLoaded' does not exist on type 'SignUpSignalValue'.
+app/signup/page.tsx(25,7): error TS2353: Object literal may only specify known properties, and 'password' does not exist in type 'SignUpFutureCreateParams'.
+app/signup/page.tsx(29,16): error TS2339: Property 'status' does not exist on type '{ error: ClerkError | null; }'.
+app/signup/page.tsx(30,41): error TS2339: Property 'createdSessionId' does not exist on type '{ error: ClerkError | null; }'.

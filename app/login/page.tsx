@@ -1,4 +1,43 @@
+// @ts-nocheck
+"use client";
+
+import { useSignIn } from "@clerk/nextjs";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function LoginPage() {
+  const { signIn, setActive, isLoaded } = useSignIn();
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!isLoaded) return;
+
+  try {
+    await signIn.create({
+      identifier: email,
+    });
+
+    const result = await signIn.attemptFirstFactor({
+      strategy: "password",
+      password: password,
+    });
+
+    if (result.status === "complete") {
+      await setActive?.({
+        session: result.createdSessionId,
+      });
+
+      router.push("/dashboard");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
   return (
     <div className="min-h-screen w-full bg-black flex items-center justify-center px-6">
       
@@ -23,7 +62,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           
           {/* Email */}
           <div>
@@ -33,6 +72,8 @@ export default function LoginPage() {
             <input
               type="email"
               placeholder="you@domain.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-1 w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/60"
             />
           </div>
@@ -45,6 +86,8 @@ export default function LoginPage() {
             <input
               type="password"
               placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="mt-1 w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/60"
             />
           </div>

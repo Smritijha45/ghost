@@ -1,56 +1,37 @@
-export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { extractTextFromPDF } from "@/lib/pdf";
-import { callGemini } from "@/lib/gemini";
-
-
+import prisma from "@/lib/prisma";
+import { analyzeResume } from "@/lib/gemini";
 
 export async function POST(req: Request) {
+
+  const formData = await req.formData();
+
+  const file = formData.get("resume") as File;
+  const companyType = formData.get("companyType") as string;
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const text = await extractTextFromPDF(buffer);
+
+  const aiResult = await analyzeResume(text, companyType);
+
   try {
-    const formData = await req.formData();
-    const file = formData.get("resume") as File;
-    const companyType = formData.get("companyType") as string;
-
-    if (!file) {
-      return NextResponse.json(
-        { error: "Resume not uploaded" },
-        { status: 400 }
-      );
-    }
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const resumeText = await extractTextFromPDF(buffer);
-
-    const prompt = `
-You are a brutally honest recruiter reviewing a resume for a ${companyType} company.
-
-Roast this resume in a sarcastic but helpful way.
-
-Return response in this format:
-
-1. ATS Score (out of 100)
-2. Strengths
-3. Weaknesses
-4. Brutal Roast Paragraph
-
-Resume:
-${resumeText}
-`;
-
-    const analysis = await callGemini(prompt);
-
-    return NextResponse.json({
-      analysis,
-      resumeText,
-      companyType,
+    await prisma.analysis.create({
+      data: {
+        fileName: file.name,
+        companyType,
+        score: aiResult.score || 75,
+        issues: aiResult.analysisText || "Analysis missing"
+      }
     });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "Resume analysis failed" },
-      { status: 500 }
-    );
+  } catch (err) {
+    console.warn("Could not save to db", err);
   }
+
+  return NextResponse.json({
+    analysis: aiResult.analysisText || "Error parsing analysis",
+    resumeText: text,
+    companyType: companyType
+  });
 }

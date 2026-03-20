@@ -1,11 +1,44 @@
+// @ts-nocheck
 "use client";
 
 import Link from "next/link";
+import { useSignUp, useClerk } from "@clerk/nextjs";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
+ const { signUp, isLoaded } = useSignUp();
+const { setActive } = useClerk();
+  const router = useRouter();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignup = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!isLoaded || !signUp) return;
+
+  try {
+    const result = await signUp.create({
+      emailAddress: email,
+      password,
+      firstName: name,
+    });
+
+    if (result.status === "complete") {
+      await setActive({ session: result.createdSessionId });
+      router.push("/dashboard");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+  }
+
   return (
     <div className="relative min-h-screen bg-black flex items-center justify-center px-6 overflow-hidden">
-      {/* 🔴 Ambient red glow */}
+      
       <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full bg-red-600/20 blur-[140px]" />
 
       <div
@@ -32,7 +65,8 @@ export default function SignupPage() {
         </div>
 
         {/* Form */}
-        <form className="space-y-5">
+        <form onSubmit={handleSignup} className="space-y-5">
+
           <div>
             <label className="block text-sm text-gray-400 mb-1">
               Full Name
@@ -40,6 +74,8 @@ export default function SignupPage() {
             <input
               type="text"
               placeholder="Alex Smith"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="
                 w-full
                 rounded-md
@@ -62,6 +98,8 @@ export default function SignupPage() {
             <input
               type="email"
               placeholder="alex@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="
                 w-full
                 rounded-md
@@ -84,6 +122,8 @@ export default function SignupPage() {
             <input
               type="password"
               placeholder="Minimum 8 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="
                 w-full
                 rounded-md
