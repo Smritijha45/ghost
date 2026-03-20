@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-export async function analyzeResume(text: string, companyType: string) {
+export async function analyzeResume(buffer: Buffer, companyType: string) {
 
   const model = genAI.getGenerativeModel({ 
     model: "gemini-2.5-flash",
@@ -17,14 +17,19 @@ Analyze this resume for ${companyType} companies.
 Return strictly in exactly this JSON format:
 {
   "score": 85,
-  "analysisText": "A detailed, multi-paragraph review evaluating the resume..."
+  "analysisText": "A detailed, multi-paragraph review evaluating the resume...",
+  "transcribedText": "The full exact extracted text of the entire resume"
 }
-
-Resume:
-${text}
 `;
 
-  const result = await model.generateContent(prompt);
+  const pdfPart = {
+    inlineData: {
+      data: buffer.toString("base64"),
+      mimeType: "application/pdf"
+    }
+  };
+
+  const result = await model.generateContent([prompt, pdfPart]);
   const response = result.response.text();
   try {
     return JSON.parse(response);

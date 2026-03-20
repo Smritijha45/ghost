@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { extractTextFromPDF } from "@/lib/pdf";
 import prisma from "@/lib/prisma";
 import { analyzeResume } from "@/lib/gemini";
 
@@ -12,9 +11,7 @@ export async function POST(req: Request) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  const text = await extractTextFromPDF(buffer);
-
-  const aiResult = await analyzeResume(text, companyType);
+  const aiResult = await analyzeResume(buffer, companyType);
 
   try {
     await prisma.analysis.create({
@@ -31,7 +28,7 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     analysis: aiResult.analysisText || "Error parsing analysis",
-    resumeText: text,
+    resumeText: aiResult.transcribedText || "",
     companyType: companyType
   });
 }
