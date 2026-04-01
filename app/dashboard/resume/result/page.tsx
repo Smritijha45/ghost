@@ -13,12 +13,18 @@ export default function ResultPage() {
   useEffect(() => {
     const stored = sessionStorage.getItem("resumeAnalysis");
     if (stored) {
-      const parsed = JSON.parse(stored);
-      setAnalysis(parsed.analysis);
-      setResumeText(parsed.resumeText);
-      setCompanyType(parsed.companyType);
+      try {
+        const parsed = JSON.parse(stored);
+        setAnalysis(parsed.analysis);
+        setResumeText(parsed.resumeText);
+        setCompanyType(parsed.companyType);
+      } catch (err) {
+        console.error("Failed to parse resumeAnalysis from session storage:", err);
+        sessionStorage.removeItem("resumeAnalysis");
+        router.push("/dashboard");
+      }
     }
-  }, []);
+  }, [router]);
 
   const fixResume = async () => {
     setLoading(true);
@@ -31,7 +37,20 @@ export default function ResultPage() {
       body: JSON.stringify({ resumeText, companyType }),
     });
 
-    const data = await res.json();
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      alert("Received invalid response for rewriting resume.");
+      setLoading(false);
+      return;
+    }
+
+    if (!res.ok) {
+      alert(data?.error || "Failed to fix resume.");
+      setLoading(false);
+      return;
+    }
 
     sessionStorage.setItem(
       "fixedResume",

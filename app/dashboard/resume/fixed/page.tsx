@@ -10,9 +10,15 @@ export default function FixedPage() {
   useEffect(() => {
     const stored = sessionStorage.getItem("fixedResume");
     if (stored) {
-      setResume(JSON.parse(stored));
+      try {
+        setResume(JSON.parse(stored));
+      } catch {
+        console.error("Failed to read fixedResume from session storage.");
+        sessionStorage.removeItem("fixedResume");
+        router.push("/dashboard");
+      }
     }
-  }, []);
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-black text-white px-6 py-12">

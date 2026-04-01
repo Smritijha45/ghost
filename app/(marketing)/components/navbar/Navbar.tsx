@@ -35,7 +35,7 @@ export default function Navbar() {
         {/* Desktop button */}
         <div className="justify-self-end hidden md:block">
           <Link
-            href="/dashboard"
+            href="/login"
             className="px-5 py-2.5 rounded-lg text-sm font-semibold
                        bg-red-600 text-white
                        hover:bg-red-700
@@ -95,7 +95,7 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/dashboard"
+            href="/login"
             className="mt-4 px-5 py-2.5 rounded-lg text-sm font-semibold
                        bg-red-600 text-white
                        hover:bg-red-700

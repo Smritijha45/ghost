@@ -23,7 +23,13 @@ export async function POST(req: Request) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  const aiResult = await analyzeResume(buffer, companyType, customPrompt);
+  let aiResult;
+  try {
+    aiResult = await analyzeResume(buffer, companyType, customPrompt);
+  } catch (error: any) {
+    console.error("Gemini AI Error:", error);
+    return NextResponse.json({ error: "Failed to parse resume with AI." }, { status: 500 });
+  }
 
   try {
     const { error } = await supabase.from("Analysis").insert({

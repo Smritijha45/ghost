@@ -29,7 +29,7 @@ export default function HeroSection() {
 
       {/* CTA */}
       <a
-        href="/dashboard"
+        href="/login"
         className="mt-10 inline-flex items-center gap-2
                    bg-red-600 hover:bg-red-700
                    text-white px-7 py-3 rounded-lg font-semibold
