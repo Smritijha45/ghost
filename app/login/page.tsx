@@ -1,43 +1,39 @@
 // @ts-nocheck
 "use client";
 
-import { useSignIn } from "@clerk/nextjs";
+import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
+  const supabase = createClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
 
-  if (!isLoaded) return;
-
-  try {
-    await signIn.create({
-      identifier: email,
-    });
-
-    const result = await signIn.attemptFirstFactor({
-      strategy: "password",
-      password: password,
-    });
-
-    if (result.status === "complete") {
-      await setActive?.({
-        session: result.createdSessionId,
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      router.push("/dashboard");
+      if (error) throw error;
+
+      if (data.session) {
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to sign in.");
     }
-  } catch (err) {
-    console.log(err);
-  }
-};
+  };
   return (
     <div className="min-h-screen w-full bg-black flex items-center justify-center px-6">
       
@@ -60,6 +56,12 @@ export default function LoginPage() {
             The AI remembers your resume.
           </p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 rounded-md bg-red-500/20 border border-red-500/50 text-red-500 text-sm text-center">
+            {error}
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">

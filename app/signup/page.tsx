@@ -2,39 +2,45 @@
 "use client";
 
 import Link from "next/link";
-import { useSignUp, useClerk } from "@clerk/nextjs";
+import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
- const { signUp, isLoaded } = useSignUp();
-const { setActive } = useClerk();
   const router = useRouter();
+  const supabase = createClient();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSignup = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
+    setError(null);
 
-  if (!isLoaded || !signUp) return;
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
+      });
 
-  try {
-    const result = await signUp.create({
-      emailAddress: email,
-      password,
-      firstName: name,
-    });
+      if (signUpError) throw signUpError;
 
-    if (result.status === "complete") {
-      await setActive({ session: result.createdSessionId });
-      router.push("/dashboard");
+      if (data.user) {
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to create account.");
     }
-  } catch (err) {
-    console.error(err);
-  }
-  }
+  };
 
   return (
     <div className="relative min-h-screen bg-black flex items-center justify-center px-6 overflow-hidden">
@@ -63,6 +69,12 @@ const { setActive } = useClerk();
             The system will evaluate your resume honestly.
           </p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 rounded-md bg-red-500/20 border border-red-500/50 text-red-500 text-sm text-center">
+            {error}
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSignup} className="space-y-5">
